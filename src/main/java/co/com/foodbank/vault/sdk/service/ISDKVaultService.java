@@ -6,6 +6,7 @@ import co.com.foodbank.vault.dto.VaultDTO;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceException;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceIllegalArgumentException;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceNotAvailableException;
+import co.com.foodbank.vault.sdk.model.ResponseVaultData;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.vault.sdk.service
@@ -13,7 +14,7 @@ import co.com.foodbank.vault.sdk.exception.SDKVaultServiceNotAvailableException;
  */
 public interface ISDKVaultService {
 
-    String create(VaultDTO dto)
+    ResponseVaultData create(VaultDTO dto)
             throws JsonMappingException, JsonProcessingException,
             SDKVaultServiceException, SDKVaultServiceNotAvailableException,
             SDKVaultServiceIllegalArgumentException;

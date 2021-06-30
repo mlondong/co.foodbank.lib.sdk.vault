@@ -14,11 +14,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import co.com.foodbank.vault.dto.VaultDTO;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceException;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceIllegalArgumentException;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceNotAvailableException;
+import co.com.foodbank.vault.sdk.model.ResponseVaultData;
 
 @Service
 @Validated
@@ -27,16 +30,19 @@ public class SDKVaultService implements ISDKVaultService {
     @Autowired
     private RestTemplate restTemplate;
 
-
     @Autowired
     private HttpHeaders httpHeaders;
-
 
     @Value("${urlSdlVault}")
     private String urlSdlVault;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+
     @Override
-    public String create(VaultDTO dto)
+    public ResponseVaultData create(VaultDTO dto)
             throws JsonMappingException, JsonProcessingException,
             SDKVaultServiceException, SDKVaultServiceIllegalArgumentException {
 
@@ -46,8 +52,13 @@ public class SDKVaultService implements ISDKVaultService {
             HttpEntity<VaultDTO> entity =
                     new HttpEntity<VaultDTO>(dto, httpHeaders);
 
-            return restTemplate.exchange(urlSdlVault, HttpMethod.POST, entity,
-                    String.class).getBody();
+            String response = restTemplate.exchange(urlSdlVault,
+                    HttpMethod.POST, entity, String.class).getBody();
+
+            return objectMapper.readValue(response,
+                    new TypeReference<ResponseVaultData>() {});
+
+
 
         } catch (ResourceAccessException e) {
             throw new SDKVaultServiceNotAvailableException(e);

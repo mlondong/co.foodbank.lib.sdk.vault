@@ -5,7 +5,7 @@ import co.com.foodbank.address.dto.Address;
 import co.com.foodbank.address.dto.IAddress;
 import co.com.foodbank.contribution.dto.IContribution;
 
-public class VaultData {
+public class ResponseVaultData {
 
     private String id;
 
@@ -18,7 +18,7 @@ public class VaultData {
     private Collection<IContribution> contribution;
 
 
-    public VaultData() {
+    public ResponseVaultData() {
 
     }
 
@@ -32,7 +32,7 @@ public class VaultData {
 
 
 
-    public VaultData(Address address, String phones, String contact,
+    public ResponseVaultData(Address address, String phones, String contact,
             Collection<IContribution> contribution) {
         this.address = address;
         this.phones = phones;
