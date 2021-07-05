@@ -36,11 +36,17 @@ public class SDKVaultService implements ISDKVaultService {
     @Value("${urlSdlVault}")
     private String urlSdlVault;
 
+    @Value("${urlSdlupdateVault}")
+    private String urlSdlupdateVault;
+
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final int OPTION_UPDTATE_VAULT = 1;
 
-
+    /**
+     * Method to create a Vault.
+     */
     @Override
     public ResponseVaultData create(VaultDTO dto)
             throws JsonMappingException, JsonProcessingException,
@@ -71,4 +77,65 @@ public class SDKVaultService implements ISDKVaultService {
             throw new SDKVaultServiceException(e);
         }
     }
+
+
+
+    /**
+     * *Method to update a Vault.
+     * 
+     * @param dto
+     * @param id
+     * @return {@code}
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     * @throws SDKVaultServiceException
+     * @throws SDKVaultServiceIllegalArgumentException
+     */
+    @Override
+    public ResponseVaultData update(VaultDTO dto, String id)
+            throws JsonMappingException, JsonProcessingException,
+            SDKVaultServiceException, SDKVaultServiceIllegalArgumentException {
+
+        try {
+
+            httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<VaultDTO> entity =
+                    new HttpEntity<VaultDTO>(dto, httpHeaders);
+
+            String response =
+                    restTemplate
+                            .exchange(getURL(OPTION_UPDTATE_VAULT, id),
+                                    HttpMethod.PUT, entity, String.class)
+                            .getBody();
+
+            return objectMapper.readValue(response,
+                    new TypeReference<ResponseVaultData>() {});
+
+
+
+        } catch (ResourceAccessException e) {
+            throw new SDKVaultServiceNotAvailableException(e);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                throw new SDKVaultServiceIllegalArgumentException(e);
+            }
+            throw new SDKVaultServiceException(e);
+        } catch (Exception e) {
+            throw new SDKVaultServiceException(e);
+        }
+    }
+
+
+    public String getURL(int option, String id) {
+        String url = null;
+        switch (option) {
+            case 1:
+                url = urlSdlupdateVault.concat(id);
+
+            default:
+                break;
+        }
+        return url;
+    }
+
 }
