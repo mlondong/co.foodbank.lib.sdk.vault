@@ -14,9 +14,37 @@ import co.com.foodbank.vault.sdk.model.ResponseVaultData;
  */
 public interface ISDKVaultService {
 
+    /**
+     * @param dto
+     * @return {@code ResponseVaultData}
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     * @throws SDKVaultServiceException
+     * @throws SDKVaultServiceNotAvailableException
+     * @throws SDKVaultServiceIllegalArgumentException
+     */
     ResponseVaultData create(VaultDTO dto)
             throws JsonMappingException, JsonProcessingException,
             SDKVaultServiceException, SDKVaultServiceNotAvailableException,
             SDKVaultServiceIllegalArgumentException;
+
+
+
+    /**
+     * @param dto
+     * @param id
+     * @return {@code ResponseVaultData}
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     * @throws SDKVaultServiceException
+     * @throws SDKVaultServiceNotAvailableException
+     * @throws SDKVaultServiceIllegalArgumentException
+     */
+    ResponseVaultData update(VaultDTO dto, String id)
+            throws JsonMappingException, JsonProcessingException,
+            SDKVaultServiceException, SDKVaultServiceNotAvailableException,
+            SDKVaultServiceIllegalArgumentException;
+
+
 
 }
