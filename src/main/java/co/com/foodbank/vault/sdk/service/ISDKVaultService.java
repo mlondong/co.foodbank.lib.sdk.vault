@@ -40,7 +40,7 @@ public interface ISDKVaultService {
      * @throws SDKVaultServiceNotAvailableException
      * @throws SDKVaultServiceIllegalArgumentException
      */
-    ResponseVaultData update(VaultDTO dto, String id)
+    ResponseVaultData update(VaultDTO dto, String idProvider)
             throws JsonMappingException, JsonProcessingException,
             SDKVaultServiceException, SDKVaultServiceNotAvailableException,
             SDKVaultServiceIllegalArgumentException;
