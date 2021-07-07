@@ -44,6 +44,8 @@ public class SDKVaultService implements ISDKVaultService {
 
     private static final int OPTION_UPDTATE_VAULT = 1;
 
+    private static final int OPTION_CREATE_VAULT = 2;
+
     /**
      * Method to create a Vault.
      */
@@ -58,8 +60,11 @@ public class SDKVaultService implements ISDKVaultService {
             HttpEntity<VaultDTO> entity =
                     new HttpEntity<VaultDTO>(dto, httpHeaders);
 
-            String response = restTemplate.exchange(urlSdlVault,
-                    HttpMethod.POST, entity, String.class).getBody();
+            String response =
+                    restTemplate
+                            .exchange(getURL(OPTION_CREATE_VAULT, ""),
+                                    HttpMethod.POST, entity, String.class)
+                            .getBody();
 
             return objectMapper.readValue(response,
                     new TypeReference<ResponseVaultData>() {});
@@ -92,7 +97,7 @@ public class SDKVaultService implements ISDKVaultService {
      * @throws SDKVaultServiceIllegalArgumentException
      */
     @Override
-    public ResponseVaultData update(VaultDTO dto, String id)
+    public ResponseVaultData update(VaultDTO dto, String idProvider)
             throws JsonMappingException, JsonProcessingException,
             SDKVaultServiceException, SDKVaultServiceIllegalArgumentException {
 
@@ -104,7 +109,7 @@ public class SDKVaultService implements ISDKVaultService {
 
             String response =
                     restTemplate
-                            .exchange(getURL(OPTION_UPDTATE_VAULT, id),
+                            .exchange(getURL(OPTION_UPDTATE_VAULT, idProvider),
                                     HttpMethod.PUT, entity, String.class)
                             .getBody();
 
@@ -131,7 +136,8 @@ public class SDKVaultService implements ISDKVaultService {
         switch (option) {
             case 1:
                 url = urlSdlupdateVault.concat(id);
-
+            case 2:
+                url = urlSdlVault.concat(id);
             default:
                 break;
         }
