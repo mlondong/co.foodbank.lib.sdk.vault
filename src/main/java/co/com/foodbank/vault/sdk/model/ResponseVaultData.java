@@ -2,8 +2,8 @@ package co.com.foodbank.vault.sdk.model;
 
 import java.util.Collection;
 import co.com.foodbank.address.dto.Address;
-import co.com.foodbank.address.dto.IAddress;
-import co.com.foodbank.contribution.dto.IContribution;
+import co.com.foodbank.address.dto.interfaces.IAddress;
+import co.com.foodbank.contribution.dto.interfaces.IContribution;
 
 public class ResponseVaultData {
 
