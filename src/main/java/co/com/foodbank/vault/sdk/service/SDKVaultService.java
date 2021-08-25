@@ -2,7 +2,6 @@ package co.com.foodbank.vault.sdk.service;
 
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,6 +21,7 @@ import co.com.foodbank.vault.sdk.exception.SDKVaultServiceException;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceIllegalArgumentException;
 import co.com.foodbank.vault.sdk.exception.SDKVaultServiceNotAvailableException;
 import co.com.foodbank.vault.sdk.model.ResponseVaultData;
+import co.com.foodbank.vault.sdk.util.UrlVault;
 
 @Service
 @Validated
@@ -33,18 +33,13 @@ public class SDKVaultService implements ISDKVaultService {
     @Autowired
     private HttpHeaders httpHeaders;
 
-    @Value("${urlSdlVault}")
-    private String urlSdlVault;
-
-    @Value("${urlSdlupdateVault}")
-    private String urlSdlupdateVault;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final int OPTION_UPDTATE_VAULT = 1;
+    @Autowired
+    private UrlVault urlVault;
 
-    private static final int OPTION_CREATE_VAULT = 2;
+
 
     /**
      * Method to create a Vault.
@@ -60,11 +55,8 @@ public class SDKVaultService implements ISDKVaultService {
             HttpEntity<VaultDTO> entity =
                     new HttpEntity<VaultDTO>(dto, httpHeaders);
 
-            String response =
-                    restTemplate
-                            .exchange(getURL(OPTION_CREATE_VAULT, ""),
-                                    HttpMethod.POST, entity, String.class)
-                            .getBody();
+            String response = restTemplate.exchange(urlVault.toCreate(),
+                    HttpMethod.POST, entity, String.class).getBody();
 
             return objectMapper.readValue(response,
                     new TypeReference<ResponseVaultData>() {});
@@ -109,14 +101,12 @@ public class SDKVaultService implements ISDKVaultService {
 
             String response =
                     restTemplate
-                            .exchange(getURL(OPTION_UPDTATE_VAULT, idProvider),
+                            .exchange(urlVault.toUpdate(idProvider),
                                     HttpMethod.PUT, entity, String.class)
                             .getBody();
 
             return objectMapper.readValue(response,
                     new TypeReference<ResponseVaultData>() {});
-
-
 
         } catch (ResourceAccessException e) {
             throw new SDKVaultServiceNotAvailableException(e);
@@ -131,17 +121,5 @@ public class SDKVaultService implements ISDKVaultService {
     }
 
 
-    public String getURL(int option, String id) {
-        String url = null;
-        switch (option) {
-            case 1:
-                url = urlSdlupdateVault.concat(id);
-            case 2:
-                url = urlSdlVault.concat(id);
-            default:
-                break;
-        }
-        return url;
-    }
 
 }
